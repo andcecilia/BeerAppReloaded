@@ -7,8 +7,6 @@
 
 import Foundation
 
-// TOD: importar a lib `Alamofire` para poder fazer a requisição com o backend(API)
-import Alamofire
 
 struct DataType {
     typealias JSON = [AnyHashable: Any?]
@@ -22,18 +20,35 @@ class Network {
         case api = "https://api.punkapi.com/v2/"
     }
     
-    
-    // TODO: Criar função para fazer a requisição com a API
-    func fetchBeerList(completion: @escaping ([Beer]?, Error?) -> Void) {
-        let url = URL(string: UrlEndpoint.api.rawValue + "beers")!
+    //TODO: Criar a função para fazer a requisição com a API via URLSessions
         
-        AF.request(url,method: .get, parameters: nil).validate().responseJSON { response in
-            let result = try? JSONSerialization.jsonObject(with: response.data ?? Data(), options: .allowFragments) as? [DataType.JSON]
-            let beers = result?.toBeers()
-            completion(beers, response.error)
+        func fetchBeerList(completion: @escaping (Result<[Beer]?, Error>) -> Void) {
+            guard let url = URL(string: UrlEndpoint.api.rawValue + "beers") else { return }
+            let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { data, response, error in
+                guard let data = data, error == nil else { return }
+                do {
+                    let result = try JSONDecoder().decode([Beer].self, from: data)
+                    completion(.success(result))
+                    print(result)
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
         }
     }
-}
+    
+//    // TODO: Criar função para fazer a requisição com a API
+//    func fetchBeerList(completion: @escaping ([Beer]?, Error?) -> Void) {
+//        let url = URL(string: UrlEndpoint.api.rawValue + "beers")!
+//
+//        AF.request(url,method: .get, parameters: nil).validate().responseJSON { response in
+//            let result = try? JSONSerialization.jsonObject(with: response.data ?? Data(), options: .allowFragments) as? [DataType.JSON]
+//            let beers = result?.toBeers()
+//            completion(beers, response.error)
+//        }
+//    }
+//}
 
 extension Data {
     func toBeer() -> Beer? {

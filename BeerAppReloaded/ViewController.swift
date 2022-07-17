@@ -8,7 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
     //MARK: - Public Vars
     
     // TODO: Criar uma variável instanciando uma lista do tipo da nossa model (Beer)
@@ -26,7 +26,7 @@ class ViewController: UIViewController {
         setUpTableView()
         
         // TODO: Fazer a requisição para a API
-        fetchBeerList() 
+        fetchBeerList()
     }
     
     //MARK: - Private Functions
@@ -43,9 +43,10 @@ class ViewController: UIViewController {
     func fetchBeerList() {
         Network.shared.fetchBeerList(completion: { result in
             switch result {
-                //if the result carries an optional value, there must
             case .success(let beerResponse):
+                //if the result carries an optional value, it should be unwrapped or given two ?? optional chains and the data type as a default value.
                 self.beerList = beerResponse ?? []
+                
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }

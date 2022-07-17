@@ -42,10 +42,10 @@ class DetailsViewController: UIViewController {
 
         title = beer.name
 
-        beerImageView.af.setImage(withURL: URL(string: beer.beerImageUrl)!)
+        beerImageView.af.setImage(withURL: URL(string: beer.beerImageUrl ?? String())!)
         
-        alcoholLabel.text = "Alcohol Content: \(beer.abv)"
-        bitternessLabel.text = "Bitterness:  \(beer.ibu)"
+        alcoholLabel.text = "Alcohol Content: \(beer.abv ?? Double())"
+        bitternessLabel.text = "Bitterness:  \(beer.ibu ?? Double())"
         taglineLabel.text = beer.tagline
         descriptionLabel.text = "Description"
         descriptionTextView.text = beer.description

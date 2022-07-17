@@ -26,10 +26,7 @@ class ViewController: UIViewController {
         setUpTableView()
         
         // TODO: Fazer a requisição para a API
-        fetchBeerList() { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.tableView.reloadData()
-        }
+        fetchBeerList() 
     }
     
     //MARK: - Private Functions
@@ -43,19 +40,20 @@ class ViewController: UIViewController {
     //MARK: - Public Functions
     
     // TODO: Fazer a requisição para o backend
-    func fetchBeerList(completion: @escaping () -> Void) {
-        
-        Network.shared.fetchBeerList() { [weak self] beers, _ in
-            guard let strongSelf = self else { completion(); return }
-            
-            if let items = beers, items.count > Int() {
-                strongSelf.beerList.append(contentsOf: items)
-                
-                self?.tableView.reloadData()
+    func fetchBeerList() {
+        Network.shared.fetchBeerList(completion: { result in
+            switch result {
+                //if the result carries an optional value, there must
+            case .success(let beerResponse):
+                self.beerList = beerResponse ?? []
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            case .failure(let error):
+                debugPrint(error)
             }
-            
-            completion()
-        }
+        })
+        
         
     }
 }

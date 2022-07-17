@@ -25,11 +25,11 @@ class BeerItemTableViewCell: UITableViewCell, NibReusable {
         didSet {
             guard let beerLayout = beerLayout else { return }
             
-            beerImageView.af.setImage(withURL: URL(string: beerLayout.beerImageUrl)!)
+            beerImageView.af.setImage(withURL: URL(string: beerLayout.beerImageUrl ?? String())!)
             
             nameLabel.text = beerLayout.name
             
-            abvLabel.text = String(beerLayout.abv)
+            abvLabel.text = "\(beerLayout.abv ?? Double())"
         }
     }
     
